@@ -69,8 +69,6 @@ public class CampanhaControllerTest {
             .build();
 	}
 
-
-
     @Test
 	public void shouldGetCampanhaById() throws Exception {
         final Campanha campanha = new Campanha();
