@@ -96,7 +96,7 @@ public class CampanhaController {
 
 	@ExceptionHandler(ValidateException.class)
     public void handle(HttpServletResponse res) throws IOException {
-        res.sendError(400, "Explicit exception handler works!");
+        res.sendError(400, "Erro validacao");
     }
 
 }

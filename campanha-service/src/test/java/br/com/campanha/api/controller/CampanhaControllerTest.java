@@ -33,14 +33,10 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * CampanhaControllerTest

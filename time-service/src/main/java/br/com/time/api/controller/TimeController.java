@@ -1,7 +1,9 @@
 package br.com.time.api.controller;
 
+import java.io.IOException;
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +59,6 @@ public class TimeController {
 	@RequestMapping( method = RequestMethod.POST)
 	public ResponseEntity<?> inserir(@Valid @RequestBody Time c, BindingResult result) {
 		try {
-			//validator.validaCriacao(c, result);
 			if(!result.hasErrors()) {
 				service.criar(c);
 			} else {
@@ -87,5 +89,10 @@ public class TimeController {
 		
 		return new ResponseEntity(HttpStatus.OK);
 	}
+
+	@ExceptionHandler(ValidateException.class)
+    public void handle(HttpServletResponse res) throws IOException {
+        res.sendError(400, "Erro validacao");
+    }
 
 }
