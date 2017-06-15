@@ -1,0 +1,139 @@
+version: '3'
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+  
+  eureka:
+     image: frolvlad/alpine-oraclejdk8:slim
+     working_dir: /app
+     volumes:
+       - ./discovery/target:/app
+       - ./logs:/app/logs
+     command: java -Xmx200m -jar -Dspring.profiles.active=docker /app/discovery.jar 
+     expose:
+       - 8761
+     ports:
+       - 8761:8761
+     logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+
+  gateway:
+     image: frolvlad/alpine-oraclejdk8:slim
+     working_dir: /app
+     volumes:
+       - ./gateway/target:/app
+       - ./logs:/app/logs
+     command: java -Xmx200m -jar -Dspring.profiles.active=docker /app/gateway.jar 
+     ports:
+       - 8765:8765
+     depends_on:
+       - eureka
+     logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+
+  campanha-service:
+    image: frolvlad/alpine-oraclejdk8:slim
+    working_dir: /app
+    volumes: 
+      - ./campanha-service/target:/app
+      - ./logs:/app/logs
+    command: java -Xmx200m -jar -Dspring.profiles.active=docker /app/campanha-api.jar
+    ports:
+      - 8881:8881
+    links:
+      - capanha-mongodb
+    environment:
+      MONGODB_DATABASE: dev
+      MONGODB_URI: mongodb://capanha-mongodb/campanha
+    depends_on:
+       - eureka
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+  capanha-mongodb:
+    image: mongo:3.4
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles
+
+  time-service:
+    image: frolvlad/alpine-oraclejdk8:slim
+    working_dir: /app
+    volumes: 
+      - ./time-service/target:/app
+      - ./logs:/app/logs
+    command: java -Xmx200m -jar -Dspring.profiles.active=docker /app/time-api.jar
+    ports:
+      - 8882:8882
+    links:
+      - time-mongodb
+    environment:
+      MONGODB_DATABASE: dev
+      MONGODB_URI: mongodb://time-mongodb/time
+    depends_on:
+       - eureka
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+  time-mongodb:
+    image: mongo:3.4
+    ports:
+      - 27018:27017
+    command: mongod --smallfiles
+
+  torcedor-service:
+    image: frolvlad/alpine-oraclejdk8:slim
+    working_dir: /app
+    volumes: 
+      - ./torcedor-service/target:/app
+      - ./logs:/app/logs
+    command: java -Xmx200m -jar -Dspring.profiles.active=docker /app/torcedor-api.jar
+    ports:
+      - 8883:8882
+    links:
+      - torcedor-mongodb
+    environment:
+      MONGODB_DATABASE: dev
+      MONGODB_URI: mongodb://torcedor-mongodb/torcedor
+    depends_on:
+       - eureka
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+  torcedor-mongodb:
+    image: mongo:3.4
+    ports:
+      - 27019:27017
+    command: mongod --smallfiles
+
+  monitoring:
+     image: frolvlad/alpine-oraclejdk8:slim
+     working_dir: /app
+     volumes:
+       - ./monitoring/target:/app
+       - ./logs:/app/logs
+     command: java -Xmx200m -jar -Dspring.profiles.active=docker /app/monitoring.jar 
+     ports:
+       - 9000:8080
+       - 8989:8989
+     logging:
+      options:
+        max-size: "10m"
+        max-file: "10"

@@ -1,0 +1,60 @@
+server:
+  port: 8765
+    
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/    
+            
+logging:
+  file: logs/gateway.log
+  level:
+    root: WARN
+    # Set INFO to see the allocated port
+    org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer: INFO
+    org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainer: INFO
+    org.springframework.security: DEBUG	    
+
+zuul:
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+
+  routes:
+    campanha-service:
+      path: /campanhas/**
+      serviceId: campanha-service
+      stripPrefix: false
+    time-service:
+      path: /times/**
+      serviceId: time-service
+      stripPrefix: false
+    torcedor-service:
+      path: /torcedores/**
+      serviceId: torcedor-service
+      stripPrefix: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 20000
+
+ribbon:
+  ReadTimeout: 20000
+  ConnectTimeout: 20000
+      
+    
+---
+spring:
+  profiles: docker
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+    

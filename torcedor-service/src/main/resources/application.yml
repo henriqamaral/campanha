@@ -1,0 +1,47 @@
+server:
+  context-path: /torcedores
+  port: 8882
+endpoints:
+  shutdown:
+    enabled: true
+  restart:
+    enabled: true
+    
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/    
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+feign:
+  hystrix:
+    enabled: true
+  
+logging:
+  file: logs/torcedor-api.log
+  level:
+    root: WARN
+
+    # Set INFO to see the allocated port
+    org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer: INFO
+    org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainer: INFO 
+    logging.level.org.springframework.web: DEBUG
+spring:
+  rabbitmq:
+    host: rabbitmq
+
+---
+# Auth-server instance when used on Docker
+spring:
+  profiles: docker
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
