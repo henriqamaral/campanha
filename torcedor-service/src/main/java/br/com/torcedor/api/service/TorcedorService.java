@@ -13,6 +13,7 @@ import br.com.torcedor.api.exception.ValidateException;
 import br.com.torcedor.api.model.Campanha;
 import br.com.torcedor.api.model.Torcedor;
 import br.com.torcedor.api.repository.TorcedorRepository;
+import feign.FeignException;
 
 /**
  * TorcedorService
@@ -55,9 +56,7 @@ public class TorcedorService {
 
     public void alterar(Torcedor c) throws Exception {
         Torcedor old = repo.findOne(c.getId());
-        if(old == null) {
-            throw new Exception("Not Found");
-        }
+        Assert.notNull(old, "Torcedo não cadastrado");
         old.setNome(c.getNome());
         //fazer chamada MQ para avisar ouvintes sobre alteracao da Torcedor
         repo.save(old);
@@ -70,18 +69,29 @@ public class TorcedorService {
     public void associar(String idTorcedor, String idCampanha) {
         Torcedor old = repo.findOne(idTorcedor);
         Assert.notNull(old, "Torcedo não cadastrado");
-
+        Assert.notNull(findCampanha(idTorcedor, idCampanha), "Campanha não cadastrada");
         //verifica se a campanha já está cadastrada
         if(old.getCampanhas() != null) {
             if(old.getCampanhas().contains(idCampanha)) {
                 throw new ValidateException("Campanha já cadastrada");
             }
-        } else { // cria nova lista
-            old.setCampanhas(new ArrayList<>());
-        }
-        old.getCampanhas().add(idCampanha);
+        } 
+        old.addCampanha(idCampanha);
         repo.save(old);
 
+    }
+
+     private String findCampanha(String idTorcedor, String idCampanha) {
+        //verifica se a campanha existe
+        try {
+            String campanha = campanhaServiceClient.findCampanha(idCampanha);
+            return campanha;
+        } catch (FeignException f) {
+            if(f.status() == 404) {
+                return null;
+            }
+        }
+        return null;
     }
 
 

@@ -1,6 +1,7 @@
 package br.com.torcedor.api.model;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -77,6 +78,13 @@ public class Torcedor {
     }
     public void setCampanhas(Collection<String> campanhas) {
         this.campanhas = campanhas;
+    }
+
+public void addCampanha(String campanha) {
+        if(this.campanhas == null) {
+            this.campanhas = new ArrayList<String>();
+        }
+        this.campanhas.add(campanha);
     }
     
 }

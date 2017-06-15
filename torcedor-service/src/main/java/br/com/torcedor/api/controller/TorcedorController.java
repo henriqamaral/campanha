@@ -102,16 +102,9 @@ public class TorcedorController {
 	@RequestMapping(value = "/{id}/associar/{idCampanha}", method = RequestMethod.GET)
 	//Associa Torcedor a uma campanha
 	public ResponseEntity<?> associar(@PathVariable(value = "id") String id, 
-			@PathVariable(value = "idCampanha") String idCampanha,
-			BindingResult result) {
+			@PathVariable(value = "idCampanha") String idCampanha) {
 		try {
-			validator.validaAssociacao(id, idCampanha, result);
-			if(!result.hasErrors()) {
-				service.associar(id, idCampanha);
-			} else {
-				throw new ValidateException("Erro validacao", result);
-			}
-			
+			service.associar(id, idCampanha);
 		}  catch (Exception e) {
 			logger.error(this.getClass().getSimpleName() + "#associar", e);
 			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

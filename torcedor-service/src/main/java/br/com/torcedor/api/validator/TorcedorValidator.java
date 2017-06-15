@@ -26,7 +26,6 @@ public class TorcedorValidator {
     private CampanhaServiceClient campanhaServiceClient;
     public void validaCriacao(Torcedor t, Errors errors) {
 
-       
         try {
             String time = timeServiceClient.findTime(t.getIdTimeCoracao());
             if(time == null) {
@@ -39,18 +38,6 @@ public class TorcedorValidator {
         }
     }
 
-    public void validaAssociacao(String idTorcedor, String idCampanha, Errors errors) {
-        //verifica se a campanha existe
-        try {
-            String campanha = campanhaServiceClient.findCampanha(idCampanha);
-            if(campanha == null) {
-                errors.rejectValue("campanha", null, "Campanha não existe");
-            }
-        } catch (FeignException f) {
-            if(f.status() == 404) {
-                errors.rejectValue("campanha", null, "Campanha não existe");
-            }
-        }
-    }
+   
     
 }
