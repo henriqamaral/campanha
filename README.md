@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/henriqamaral/campanha.svg?branch=master)](https://travis-ci.org/henriqamaral/campanha)
+
 # Campanha Micro Services
 
 **Simples cadastro de campanha usando micro serviços**
