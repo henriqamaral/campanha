@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("teams")
 @Api(value = "Teams", description = "Rest API for team management")
+@Slf4j
 public class TimeController {
-
-  private final Logger logger = LoggerFactory.getLogger(TimeController.class);
 
   @Autowired TimeService service;
 
@@ -37,7 +37,7 @@ public class TimeController {
     try {
       service.alterar(c);
     } catch (Exception e) {
-      logger.error(this.getClass().getSimpleName() + "#alterar", e);
+      log.error(this.getClass().getSimpleName() + "#alterar", e);
       return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -69,7 +69,7 @@ public class TimeController {
     } catch (ValidateException e) {
       throw e;
     } catch (Exception e) {
-      logger.error(this.getClass().getSimpleName() + "#inserir", e);
+      log.error(this.getClass().getSimpleName() + "#inserir", e);
       return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -85,7 +85,7 @@ public class TimeController {
           .map(time -> new ResponseEntity<>(time, HttpStatus.OK))
           .orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
     } catch (Exception e) {
-      logger.error(this.getClass().getSimpleName() + "#buscar", e);
+      log.error(this.getClass().getSimpleName() + "#buscar", e);
       return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

@@ -51,7 +51,7 @@ public class TimeControllerTest {
     final Time t = new Time("Novo Time");
     String json = mapper.writeValueAsString(t);
     mockMvc
-        .perform(post("/times").contentType(MediaType.APPLICATION_JSON).content(json))
+        .perform(post("/teams").contentType(MediaType.APPLICATION_JSON).content(json))
         .andExpect(status().isOk());
   }
 
@@ -60,7 +60,7 @@ public class TimeControllerTest {
 		final Time t = new Time("");
 		String json = mapper.writeValueAsString(t);
 		mockMvc
-				.perform(post("/times").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/teams").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest());
   }
 
@@ -71,18 +71,17 @@ public class TimeControllerTest {
 		String json = mapper.writeValueAsString(t);
 		doThrow(new Exception()).when(service).criar(any(Time.class));
 		mockMvc
-				.perform(post("/times").contentType(MediaType.APPLICATION_JSON).content(json))
+				.perform(post("/teams").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
 
   @Test
   public void shouldGetTimeById() throws Exception {
-    final Time t = new Time("Time");
-    t.setId("12345");
+    final Time t = new Time("Time", "12345" );
     when(service.recuperar(t.getId())).thenReturn(Optional.of(t));
 
     mockMvc
-        .perform(get("/" + t.getId()))
+        .perform(get("/teams/{id}", t.getId()))
         .andExpect(jsonPath("$.id").value(t.getId()))
         .andExpect(status().isOk());
   }
