@@ -23,6 +23,9 @@
     <lombok.version>1.16.8</lombok.version>
     <springfox.swagger.version>2.5.0</springfox.swagger.version>
     <guava.version>16.0.1</guava.version>
+    <maven.plugin.coveralls.version>4.3.0</maven.plugin.coveralls.version>
+    <maven.plugin.jacoco.version>0.8.1</maven.plugin.jacoco.version>
+    <maven.plugin.surefire.version>2.7.2</maven.plugin.surefire.version>
   </properties>
 
   <dependencyManagement>
@@ -108,6 +111,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
+
   </dependencies>
 
   <build>
@@ -122,6 +126,52 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>${maven.plugin.coveralls.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${maven.plugin.jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>jacoco-initialize</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <propertyName>jacocoArgLine</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.plugin.surefire.version}</version>
+        <configuration>
+          <argLine>${jacocoArgLine}</argLine>
+        </configuration>
       </plugin>
     </plugins>
   </build>
