@@ -13,3 +13,8 @@ install:
 
 script:
   - mvn test coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN -B -f $TEST_DIR/pom.xml
+
+
+cache:
+  directories:
+    - ~/.m2/repository
