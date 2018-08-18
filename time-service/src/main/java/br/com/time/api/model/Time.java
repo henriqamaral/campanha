@@ -1,39 +1,30 @@
 package br.com.time.api.model;
 
-
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.validation.constraints.NotEmpty;
 
-/**
- * Time
- */
 @JsonInclude(value = Include.NON_NULL)
 @Document(collection = "times")
+@Getter
+@EqualsAndHashCode(exclude = "id")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Time {
-    
-    @Id private String id;
-    @NotNull
-    @NotBlank
-    private String nome;
 
-    public String getId() {
-        return this.id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
+  @NotEmpty private String nome;
+  @Setter @Id private String id;
 
-    public String getNome() {
-        return this.nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-    
+  public Time(final String nome) {
+    this.nome = nome;
+  }
+
+  public Time(final Time oldTime, final Time newTeam) {
+    id = oldTime.getId();
+    nome = newTeam.getNome();
+  }
 }

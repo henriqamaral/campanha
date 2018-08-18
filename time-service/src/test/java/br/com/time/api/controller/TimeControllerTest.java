@@ -1,5 +1,9 @@
 package br.com.time.api.controller;
 
+import br.com.time.api.Application;
+import br.com.time.api.model.Time;
+import br.com.time.api.service.TimeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,71 +17,73 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Optional;
 
-import br.com.time.api.Application;
-import br.com.time.api.model.Time;
-import br.com.time.api.service.TimeService;
-
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * TimeControllerTest
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 @DataMongoTest
 public class TimeControllerTest {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper mapper = new ObjectMapper();
+  private MockMvc mockMvc;
+  @Mock private TimeService service;
+  @InjectMocks private TimeController timeController;
 
-    @InjectMocks
-	private TimeController timeController;
-    @Mock
-	private TimeService service;
-    
+  @Before
+  public void setup() {
+    initMocks(this);
+    this.mockMvc = MockMvcBuilders.standaloneSetup(timeController).build();
+  }
 
-    private MockMvc mockMvc;
+  @Test
+  public void shouldCreateNewTeam() throws Exception {
 
-	@Before
-	public void setup() {
-		initMocks(this);
-		this.mockMvc = MockMvcBuilders.standaloneSetup(timeController)
-            .build();
-	}
+    final Time t = new Time("Novo Time");
+    String json = mapper.writeValueAsString(t);
+    mockMvc
+        .perform(post("/times").contentType(MediaType.APPLICATION_JSON).content(json))
+        .andExpect(status().isOk());
+  }
 
-    @Test
-	public void shouldCreateNewTime() throws Exception {
-
-		final Time t = new Time();
-        t.setNome("Novo Time");
+  @Test
+  public void shouldFailWhenTeamIsNotValid() throws Exception {
+		final Time t = new Time("");
 		String json = mapper.writeValueAsString(t);
-		mockMvc.perform(post("/times").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
-	}
-
-    @Test
-	public void shouldFailWhenTimeIsNotValid() throws Exception {
-		mockMvc.perform(post("/times"))
+		mockMvc
+				.perform(post("/times").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void shouldReturnInternalErrorWhenPostATeam
+			() throws Exception {
+		final Time t = new Time("Novo Time");
+		String json = mapper.writeValueAsString(t);
+		doThrow(new Exception()).when(service).criar(any(Time.class));
+		mockMvc
+				.perform(post("/times").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
 	}
 
-    @Test
-	public void shouldGetTimeById() throws Exception {
-        final Time t = new Time();
-        t.setId("12345");
-        when(service.recuperar(t.getId())).thenReturn(t);
+  @Test
+  public void shouldGetTimeById() throws Exception {
+    final Time t = new Time("Time");
+    t.setId("12345");
+    when(service.recuperar(t.getId())).thenReturn(Optional.of(t));
 
-        mockMvc.perform(get("/" + t.getId()))
-				.andExpect(jsonPath("$.id").value(t.getId()))
-				.andExpect(status().isOk());
-    }
-
-   
+    mockMvc
+        .perform(get("/" + t.getId()))
+        .andExpect(jsonPath("$.id").value(t.getId()))
+        .andExpect(status().isOk());
+  }
 }

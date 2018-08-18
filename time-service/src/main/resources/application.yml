@@ -1,36 +1,18 @@
 server:
-  context-path: /times
   port: 8882
-endpoints:
-  shutdown:
-    enabled: true
-  restart:
-    enabled: true
-    
+
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/    
-  
-logging:
-  file: logs/time-api.log
-  level:
-    root: WARN
+      defaultZone: http://localhost:8761/eureka/
+    enabled: false
+    fetchRegistry: true
+    registerWithEureka: false
 
-    # Set INFO to see the allocated port
-    org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer: INFO
-    org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainer: INFO 
-    logging.level.org.springframework.web: DEBUG
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000
 spring:
-  rabbitmq:
-    host: rabbitmq
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/team
 ---
 # Auth-server instance when used on Docker
 spring:

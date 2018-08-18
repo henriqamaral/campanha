@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  capanha-mongodb:
+    image: mongo:3.4.2
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles

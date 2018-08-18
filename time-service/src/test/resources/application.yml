@@ -1,5 +1,4 @@
 spring:
   data:
     mongodb:
-      database: time
-      port: 0
+      uri: mongodb://localhost:27017/team
