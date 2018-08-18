@@ -1,0 +1,10 @@
+language: java
+
+jdk:
+  - openjdk8
+
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -f time-service/pom.xml
+
+script:
+  - mvn test coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN -B -f time-service/pom.xml
