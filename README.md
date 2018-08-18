@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/henriqamaral/campanha.svg?branch=master)](https://travis-ci.org/henriqamaral/campanha)
 
+[![Coverage Status](https://coveralls.io/repos/github/henriqamaral/campanha/badge.svg?branch=master)](https://coveralls.io/github/henriqamaral/campanha?branch=master)
+
 # Campanha Micro Services
 
 **Simples cadastro de campanha usando micro serviços**

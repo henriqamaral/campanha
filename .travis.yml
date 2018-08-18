@@ -3,8 +3,13 @@ language: java
 jdk:
   - openjdk8
 
+env:
+  - TEST_DIR=campanha-service
+  - TEST_DIR=time-service
+  - TEST_DIR=torcedor-service
+
 install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -f time-service/pom.xml
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -f $TEST_DIR/pom.xml
 
 script:
-  - mvn test coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN -B -f time-service/pom.xml
+  - mvn test coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN -B -f $TEST_DIR/pom.xml
