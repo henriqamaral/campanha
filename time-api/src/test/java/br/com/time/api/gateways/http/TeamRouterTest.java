@@ -21,7 +21,6 @@ import java.net.URI;
 @RunWith(SpringRunner.class)
 @WebFluxTest
 @Import(TeamRouter.class)
-// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TeamRouterTest {
 
   @MockBean private TeamHandler teamHandler;

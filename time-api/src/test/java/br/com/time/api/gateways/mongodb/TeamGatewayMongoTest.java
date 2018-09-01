@@ -13,19 +13,19 @@ import reactor.test.StepVerifier;
 
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class TeamGatewayMongoTest {
+public class TeamGatewayMongoTest {
 
   @InjectMocks private TeamGatewayMongo teamGateway;
 
   @Mock private TeamRepository teamRepository;
 
   @Before
-  void setup() {
+  public void setup() {
     initMocks(this);
   }
 
   @Test
-  void givenTeam_whenSave_success() {
+  public void givenTeam_whenSave_success() {
     String teamID = "1234";
 
     Mockito.when(teamRepository.save(Mockito.any(Team.class)))
