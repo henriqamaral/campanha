@@ -5,7 +5,7 @@ jdk:
 
 env:
   - TEST_DIR=campanha-service
-  - TEST_DIR=time-service
+  - TEST_DIR=time-api
   - TEST_DIR=torcedor-service
 
 install:

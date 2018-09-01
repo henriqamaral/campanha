@@ -11,7 +11,6 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
  * Application
  *
  */
-@EnableAutoConfiguration
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableCircuitBreaker
